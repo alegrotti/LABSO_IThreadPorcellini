@@ -1,4 +1,4 @@
-package multi_user_info_server.Server;
+package Server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
