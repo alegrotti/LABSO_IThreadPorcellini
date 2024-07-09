@@ -17,10 +17,10 @@ public class SocketListener implements Runnable {
     @Override
     public void run() {
         try {
-            //this.server.setSoTimeout(5000);
+            this.server.setSoTimeout(5000);
             while (!Thread.interrupted()) {
                 try {
-                    //System.out.println("Waiting for a new client...");
+                    System.out.println("Waiting for a new client...");
                     /*
                      * Questa istruzione è bloccante, a prescindere da Thread.interrupt(). Occorre
                      * quindi controllare, una volta accettata la connessione, che il server non sia
@@ -57,22 +57,23 @@ public class SocketListener implements Runnable {
                     break;
                 }
             }
+            System.out.println("Interrupting children...");
+            for (Thread child : this.children) {
+                System.out.println("Interrupting " + child + "...");
+                /*
+                * child.interrupt() non è bloccante; una volta inviato il segnale
+                * di interruzione proseguiamo con l'esecuzione, senza aspettare che "child"
+                * termini
+                */
+                child.interrupt();
+            }
             this.server.close();
         } catch (IOException e) {
             System.err.println("SocketListener: IOException caught: " + e);
             e.printStackTrace();
         }
 
-        System.out.println("Interrupting children...");
-        for (Thread child : this.children) {
-            System.out.println("Interrupting " + child + "...");
-            /*
-             * child.interrupt() non è bloccante; una volta inviato il segnale
-             * di interruzione proseguiamo con l'esecuzione, senza aspettare che "child"
-             * termini
-             */
-            child.interrupt();
-        }
+        
 
     }
 
