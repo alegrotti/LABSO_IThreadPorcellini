@@ -52,13 +52,14 @@ public class ClientHandler implements Runnable {
                     }
                 } else {
                     to.println("quit");
+                    //closed = true;
                     break;
                 }
             }
 
             to.println("quit");
             s.close();
-            System.out.println("Closed");
+            System.out.println("Closed socket");
         } catch (IOException e) {
             System.err.println("ClientHandler: IOException caught: " + e);
             e.printStackTrace();

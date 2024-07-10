@@ -17,7 +17,7 @@ public class Receiver implements Runnable {
     @Override
     public void run() {
         try {
-            Scanner from = new Scanner(this.s.getInputStream());
+            Scanner from = new Scanner(s.getInputStream());
             while (true) {
                 String response = from.nextLine();
                 System.out.println("Received: " + response);
@@ -31,7 +31,7 @@ public class Receiver implements Runnable {
             e.printStackTrace();
         } finally {
             System.out.println("Receiver closed.");
-            this.sender.interrupt();
+            sender.interrupt();
         }
     }
 }

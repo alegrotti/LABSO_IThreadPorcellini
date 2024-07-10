@@ -60,12 +60,13 @@ public class SocketListener implements Runnable {
             System.out.println("Interrupting children...");
             for (Thread child : this.children) {
                 System.out.println("Interrupting " + child + "...");
-                /*
-                * child.interrupt() non è bloccante; una volta inviato il segnale
-                * di interruzione proseguiamo con l'esecuzione, senza aspettare che "child"
-                * termini
-                */
-                child.interrupt();
+                try{
+                    child.interrupt();
+                    child.join();
+                }catch(InterruptedException e){
+                    return;
+                }
+                
             }
             this.server.close();
         } catch (IOException e) {
