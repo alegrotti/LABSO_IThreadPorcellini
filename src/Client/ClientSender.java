@@ -5,11 +5,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Sender implements Runnable {
+public class ClientSender implements Runnable {
 
     Socket s;
 
-    public Sender(Socket s) {
+    public ClientSender(Socket s) {
         this.s = s;
     }
 
@@ -19,7 +19,7 @@ public class Sender implements Runnable {
 
         try {
             PrintWriter to = new PrintWriter(this.s.getOutputStream(), true);
-            while (true) {
+            while (!Thread.interrupted()) {
                 String request = userInput.nextLine();
                 /*
                  * se il thread è stato interrotto mentre leggevamo l'input da tastiera, inviamo

@@ -5,18 +5,16 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Scanner;
+import Model.Topic;
 
 public class ClientHandler implements Runnable {
 
     Socket s;
     /* possiamo avere una hashmap per ogni thread, o condividerla tra tutti */
-    HashMap<String, String> information = new HashMap<String, String>();
+    HashMap<String, Topic> information = new HashMap<String, Topic>();
 
     public ClientHandler(Socket s) {
         this.s = s;
-        information.put("important", "Incredibly important bit of information about everything");
-        information.put("random", "Random bit of information about something");
-        information.put("shadow", "The outer part of a shadow is called the penumbra");
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ClientHandler implements Runnable {
                         case "info":
                             if (parts.length > 1) {
                                 String key = parts[1];
-                                String response = information.getOrDefault(key, "Error!");
+                                Topic response = information.getOrDefault(key, null);
                                 to.println(response);
                             } else {
                                 to.println("No key");
@@ -56,7 +54,7 @@ public class ClientHandler implements Runnable {
                     break;
                 }
             }
-
+            from.close();
             to.println("quit");
             s.close();
             System.out.println("Closed socket");

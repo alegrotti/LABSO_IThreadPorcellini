@@ -8,8 +8,7 @@ public class Message {
     private String text;
     private Date date;
 
-    public Message(int ID, String text) {
-        this.ID = ID;
+    public Message(String text) { 
         this.text = text;
         this.date = new Date();
     }
@@ -28,7 +27,6 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Messaggio " + ID + " - " + date + " : \n"+
-                text;
+        return "Messaggio " + ID + " - " + date + " : \n" + text;
     }
 }

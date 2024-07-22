@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Receiver implements Runnable {
+public class ClientReceiver implements Runnable {
 
     Socket s;
     Thread sender;
 
-    public Receiver(Socket s, Thread sender) {
+    public ClientReceiver(Socket s, Thread sender) {
         this.s = s;
         this.sender = sender;
     }
@@ -24,8 +24,8 @@ public class Receiver implements Runnable {
                 if (response.equals("quit")) {
                     break;
                 }
-
             }
+            from.close();
         } catch (IOException e) {
             System.err.println("IOException caught: " + e);
             e.printStackTrace();

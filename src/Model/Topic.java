@@ -1,6 +1,6 @@
 package Model;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Topic {
@@ -10,7 +10,7 @@ public class Topic {
 
     public Topic(String nome) {
         this.nome = nome;
-        this.messaggi = new ArrayList<>();
+        this.messaggi = new LinkedList<>();
     }
 
     public String getNome() {

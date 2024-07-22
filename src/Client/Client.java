@@ -5,6 +5,7 @@ import java.net.Socket;
 
 public class Client {
     public static void main(String[] args) {
+
         if (args.length < 2) {
             System.err.println("Usage: java Client <host> <port>");
             return;
@@ -17,15 +18,21 @@ public class Client {
             Socket s = new Socket(host, port);
             System.out.println("Connected to server");
 
-            System.out.println("Usage: info <key> to get info on a key");
+            System.out.println(
+                "Commands: "+
+                "\n - publish <topic_name>" + 
+                "\n - subscribe <topic_name>" +
+                "\n - show" +
+                "\n - quit"
+            );
 
             /*
              * Delega la gestione di input/output a due thread separati, uno per inviare
              * messaggi e uno per leggerli
              * 
              */
-            Thread sender = new Thread(new Sender(s));
-            Thread receiver = new Thread(new Receiver(s, sender));
+            Thread sender = new Thread(new ClientSender(s));
+            Thread receiver = new Thread(new ClientReceiver(s, sender));
 
             sender.start();
             receiver.start();
