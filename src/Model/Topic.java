@@ -5,31 +5,31 @@ import java.util.List;
 
 public class Topic {
 
-    private String nome;
-    private List<Message> messaggi;
+    private String name;
+    private List<Message> messages;
 
-    public Topic(String nome) {
-        this.nome = nome;
-        this.messaggi = new LinkedList<>();
+    public Topic(String name) {
+        this.name = name;
+        this.messages = new LinkedList<>();
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
     public List<Message> getMessaggi() {
-        return messaggi;
+        return messages;
     }
 
-    public void addMessaggio(Message messaggio) {
-        messaggi.add(messaggio);
+    public void addMessaggio(Message message) {
+        messages.add(message);
     }
 
     @Override
     public String toString() {
-        String text = "Topic " + nome + " : \n";
+        String text = "Topic " + name + " : \n";
 
-        for (Message m : messaggi)
+        for (Message m : messages)
             text+=m.toString()+"\n";
         
         return text;        
