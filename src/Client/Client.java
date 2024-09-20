@@ -33,8 +33,8 @@ public class Client {
 
             try {
                 /* rimane in attesa che sender e receiver terminino la loro esecuzione */
-                sender.join();
                 receiver.join();
+                sender.join();
                 s.close();
                 System.out.println("Socket closed.");
             } catch (InterruptedException e) {
@@ -45,8 +45,7 @@ public class Client {
             }
 
         } catch (IOException e) {
-            System.err.println("IOException caught: " + e);
-            e.printStackTrace();
+            System.err.println("Connection denied - Check address and port");
         }
     }
 }

@@ -1,0 +1,24 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "echo",
+            "type": "shell",
+            "command": "echo Hello"
+        },
+        {
+            "type": "java (buildArtifact)",
+            "targetPath": "${workspaceFolder}/${workspaceFolderBasename}.jar",
+            "elements": [
+                "${compileOutput:LABSO_IThreadPorcellini}",
+                "${dependencies:LABSO_IThreadPorcellini}",
+                "${compileOutput:LABSO_IThreadPorcellini_18ef5201}",
+                "${dependencies:LABSO_IThreadPorcellini_18ef5201}"
+            ],
+            "problemMatcher": [],
+            "label": "java (buildArtifact): LABSO_IThreadPorcellini"
+        }
+    ]
+}

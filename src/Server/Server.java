@@ -2,7 +2,6 @@ package Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Scanner;
 
 public class Server {
@@ -30,44 +29,41 @@ public class Server {
              * 
              */
             ServerSocket server = new ServerSocket(port);
-            System.out.println("Waiting for a client...");
 
-            Socket s = server.accept();
-            Thread handlerThread = new Thread(new ClientHandler(s));
-            handlerThread.start();
+            Resource rsc = new Resource();
 
-            /*
-             * Una volta effettuata la connessione, il ServerSocket non è più necessario (in
-             * questo esempio abbiamo un solo client).
-             */
-            server.close(); // Non si deve chiudere
+            Thread listenerThread = new Thread ( new SocketListener(server, rsc) );
+            listenerThread.start();
 
             boolean closed = false;
             while (!closed) {
                 String request = userInput.nextLine();
-                System.out.println("Request: " + request);
+                System.out.println("Server request: " + request);
                 String[] parts = request.split(" ");
                 switch (parts[0]) {
                     case "quit":
                         closed = true;
                         break;
                     case "show":
-                        System.out.println("List of Topic");
+                        System.out.println("Topics:\n"+rsc.getTopicList());
+                        break;
                     case "inspect":
                         System.out.println("Iteractive session");
+                        break;
                     default:
                         System.out.println("Unknown cmd");
+                        break;
                 }
             }
 
             try {
-                handlerThread.interrupt();
+                listenerThread.interrupt();
                 /* attendi la terminazione del thread */
-                handlerThread.join();
+                listenerThread.join();
             } catch (InterruptedException e) {
                 return;
             }
-            System.out.println("Main thread terminated.");
+            System.out.println("Server thread terminated.");
 
             //handlerThread.interrupt();
             //System.out.println("Closed");
@@ -76,7 +72,7 @@ public class Server {
             System.err.println("IOException caught: " + e);
             e.printStackTrace();
         }finally {
-        userInput.close();
+            userInput.close();
         }
     }
 

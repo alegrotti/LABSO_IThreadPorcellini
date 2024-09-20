@@ -3,21 +3,17 @@ package Server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class ClientHandler implements Runnable {
 
     Socket s;
-    /* possiamo avere una hashmap per ogni thread, o condividerla tra tutti */
-    
-    HashMap<String, String> information = new HashMap<String, String>();
+    Resource rsc;
+    String topic;
 
-    public ClientHandler(Socket s) {
+    public ClientHandler(Socket s, Resource rsc) {
         this.s = s;
-        information.put("important", "Incredibly important bit of information about everything");
-        information.put("random", "Random bit of information about something");
-        information.put("shadow", "The outer part of a shadow is called the penumbra");
+        this.rsc = rsc;
     }
 
     @Override
@@ -25,43 +21,110 @@ public class ClientHandler implements Runnable {
         try {
             Scanner from = new Scanner(s.getInputStream());
             PrintWriter to = new PrintWriter(s.getOutputStream(), true);
-
+            
             System.out.println("Thread " + Thread.currentThread() + " listening...");
-
+            
             boolean closed = false;
+            boolean subscriberClosed = true;
+            boolean publisherClosed = true;
+
             while (!closed) {
                 String request = from.nextLine();
                 if (!Thread.interrupted()) {
-                    System.out.println("Request: " + request);
+                    System.out.println("Client request: " + request);
                     String[] parts = request.split(" ");
                     switch (parts[0]) {
                         case "quit":
+                            to.println("quit");
                             closed = true;
                             break;
-                        case "info":
+                        case "subscribe":
                             if (parts.length > 1) {
-                                String key = parts[1];
-                                String response = information.getOrDefault(key, "Error!");
-                                to.println(response);
+                                topic = parts[1];
+                                subscriberClosed = false;
+                                closed = true;
+                                break;
                             } else {
                                 to.println("No key");
                             }
                             break;
-
+                        case "publish" : 
+                            if (parts.length > 1) {
+                                topic = parts[1];
+                                publisherClosed = false;
+                                closed = true;
+                                break;
+                            } else {
+                                to.println("No key");
+                            }
+                            break;
+                        case "show" :
+                            to.println("Topics:\n"+rsc.getTopicList());
+                            break;
                         default:
-                            to.println("Unknown cmd");
+                            to.println("Unknown command");
                     }
                 } else {
-                    //to.println("Server requested to quit");
                     to.println("quit");
                     break;
                 }
             }
 
-            s.close();
+            while (!subscriberClosed) {
+                String request = from.nextLine();
+                if (!Thread.interrupted()) {
+                    System.out.println("Client request: " + request);
+                    String[] parts = request.split(" ");
+                    switch (parts[0]) {
+                        case "quit":
+                            to.println("quit");
+                            subscriberClosed = true;
+                            break;
+                        case "listall" :
+                            to.println(rsc.getMessagesList(topic));
+                            break;
+                        default:
+                            to.println("Unknown command");
+                    }
+                } else {
+                    to.println("quit");
+                    break;
+                }
+            }
+
+            while (!publisherClosed) {
+                String request = from.nextLine();
+                if (!Thread.interrupted()) {
+                    System.out.println("Client request: " + request);
+                    String[] parts = request.split(" ");
+                    switch (parts[0]) {
+                        case "send":
+                        
+                            break;  
+                        case "list":
+                            break;  
+                        case "quit":
+                            to.println("quit");
+                            subscriberClosed = true;
+                            break;
+                        case "listall" :
+                            to.println(rsc.getMessagesList(topic));
+                            break;
+                        default:
+                            to.println("Unknown command");
+                    }
+                } else {
+                    to.println("quit");
+                    break;
+                }
+            }
+
+
             from.close();
             to.close();
-            System.out.println("Closed");
+            
+            s.close();
+            System.out.println("Client Closed");
         } catch (IOException e) {
             System.err.println("ClientHandler: IOException caught: " + e);
             e.printStackTrace();

@@ -20,20 +20,26 @@ public class ClientSender implements Runnable {
         try {
             PrintWriter to = new PrintWriter(this.s.getOutputStream(), true);
             while (true) {
-                String request = userInput.nextLine();
-                /*
-                 * se il thread è stato interrotto mentre leggevamo l'input da tastiera, inviamo
-                 * "quit" al server e usciamo
-                 */
-                if (Thread.interrupted()) {
-                    to.println("quit");
+                
+                if (!Thread.interrupted()) {
+
+                    String request = userInput.nextLine();
+                    /*
+                    * se il thread è stato interrotto mentre leggevamo l'input da tastiera, inviamo
+                    * "quit" al server e usciamo
+                    */
+                    /* in caso contrario proseguiamo e analizziamo l'input inserito */
+                    to.println(request);
+                    if (request.equals("quit")) {
+                        break;
+                    }
+
+                } else {
+                    //to.println("quit");
+                    userInput.close();
                     break;
                 }
-                /* in caso contrario proseguiamo e analizziamo l'input inserito */
-                to.println(request);
-                if (request.equals("quit")) {
-                    break;
-                }
+
             }
             System.out.println("Sender closed.");
         } catch (IOException e) {

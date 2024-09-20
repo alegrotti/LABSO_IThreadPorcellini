@@ -17,11 +17,11 @@ public class Topic {
         return name;
     }
 
-    public List<Message> getMessaggi() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void addMessaggio(Message message) {
+    public void addMessage(Message message) {
         messages.add(message);
     }
 
