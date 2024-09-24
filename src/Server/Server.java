@@ -56,17 +56,7 @@ public class Server {
                 }
             }
 
-            try {
-                listenerThread.interrupt();
-                /* attendi la terminazione del thread */
-                listenerThread.join();
-            } catch (InterruptedException e) {
-                return;
-            }
-            System.out.println("Server thread terminated.");
-
-            //handlerThread.interrupt();
-            //System.out.println("Closed");
+            System.exit(0);
 
         } catch (IOException e) {
             System.err.println("IOException caught: " + e);

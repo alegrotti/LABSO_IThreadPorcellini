@@ -10,6 +10,7 @@ public class ClientHandler implements Runnable {
     Socket s;
     Resource rsc;
     String topic;
+    Thread publisherHandler;
 
     public ClientHandler(Socket s, Resource rsc) {
         this.s = s;
@@ -64,9 +65,6 @@ public class ClientHandler implements Runnable {
                         default:
                             to.println("Unknown command");
                     }
-                } else {
-                    to.println("quit");
-                    break;
                 }
             }
 
@@ -86,9 +84,6 @@ public class ClientHandler implements Runnable {
                         default:
                             to.println("Unknown command");
                     }
-                } else {
-                    to.println("quit");
-                    break;
                 }
             }
 
@@ -113,9 +108,6 @@ public class ClientHandler implements Runnable {
                         default:
                             to.println("Unknown command");
                     }
-                } else {
-                    to.println("quit");
-                    break;
                 }
             }
 

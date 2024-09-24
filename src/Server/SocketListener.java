@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 
 public class SocketListener implements Runnable {
     ServerSocket server;
-    ArrayList<Thread> children = new ArrayList<>();
     Resource rsc;
 
     public SocketListener(ServerSocket server, Resource rsc) {
@@ -39,7 +37,6 @@ public class SocketListener implements Runnable {
                         /* crea un nuovo thread per lo specifico socket */
                         Thread handlerThread = new Thread( new ClientHandler(s, rsc) );
                         handlerThread.start();
-                        this.children.add(handlerThread);
                         /*
                          * una volta creato e avviato il thread, torna in ascolto per il prossimo client
                          */
@@ -63,26 +60,6 @@ public class SocketListener implements Runnable {
         } catch (IOException e) {
             System.err.println("SocketListener: IOException caught: " + e);
             e.printStackTrace();
-        }
-
-        System.out.println("Interrupting children...");
-        for (Thread child : this.children) {
-            System.out.println("Interrupting " + child + "...");
-            /*
-             * child.interrupt() non è bloccante; una volta inviato il segnale
-             * di interruzione proseguiamo con l'esecuzione, senza aspettare che "child"
-             * termini
-             */
-            child.interrupt();
-        }
-
-        for (Thread child : this.children) {
-            try {
-                /* attendi la terminazione del thread */
-                child.join();
-            } catch (InterruptedException e) {
-                return;
-            }
         }
 
     }
