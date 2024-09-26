@@ -1,18 +1,20 @@
 package Server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.*;
 import java.net.Socket;
-import java.util.Scanner;
+
+import Model.Message;
 
 public class ClientHandler implements Runnable {
 
     Socket s;
-    Resource rsc;
+    TopicHandler rsc;
     String topic;
-    Thread publisherHandler;
+    PrintWriter to;
+    List<Message> messaggesPublisher;
 
-    public ClientHandler(Socket s, Resource rsc) {
+    public ClientHandler(Socket s, TopicHandler rsc) {
         this.s = s;
         this.rsc = rsc;
     }
@@ -21,7 +23,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             Scanner from = new Scanner(s.getInputStream());
-            PrintWriter to = new PrintWriter(s.getOutputStream(), true);
+            to = new PrintWriter(s.getOutputStream(), true);
             
             System.out.println("Thread " + Thread.currentThread() + " listening...");
             
@@ -44,6 +46,7 @@ public class ClientHandler implements Runnable {
                                 topic = parts[1];
                                 subscriberClosed = false;
                                 closed = true;
+                                rsc.addSubscriber(topic,this);
                                 break;
                             } else {
                                 to.println("No key");
@@ -54,13 +57,14 @@ public class ClientHandler implements Runnable {
                                 topic = parts[1];
                                 publisherClosed = false;
                                 closed = true;
+                                messaggesPublisher = new ArrayList<Message>();
                                 break;
                             } else {
                                 to.println("No key");
                             }
                             break;
                         case "show" :
-                            to.println("Topics:\n"+rsc.getTopicList());
+                            to.println(rsc.getTopicList());
                             break;
                         default:
                             to.println("Unknown command");
@@ -94,13 +98,19 @@ public class ClientHandler implements Runnable {
                     String[] parts = request.split(" ");
                     switch (parts[0]) {
                         case "send":
-                        
+                            String m = request.substring(5, request.length());
+                            Message message = rsc.addMessage(m, topic);
+                            messaggesPublisher.add(message);
                             break;  
                         case "list":
+                            String stamp = "Messages of the publisher:";
+                            for (Message mess : messaggesPublisher)
+                                stamp+= "\n" + mess.toString();
+                            to.println(stamp);
                             break;  
                         case "quit":
                             to.println("quit");
-                            subscriberClosed = true;
+                            publisherClosed = true;
                             break;
                         case "listall" :
                             to.println(rsc.getMessagesList(topic));
@@ -121,6 +131,10 @@ public class ClientHandler implements Runnable {
             System.err.println("ClientHandler: IOException caught: " + e);
             e.printStackTrace();
         }
+    }
+
+    public void sendMessage(Message m){
+        to.println("New message on the Topic:\n"+m.toString());
     }
 
 }

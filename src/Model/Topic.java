@@ -7,32 +7,31 @@ public class Topic {
 
     private String name;
     private List<Message> messages;
+    private int ID;
 
     public Topic(String name) {
         this.name = name;
         this.messages = new LinkedList<>();
+        this.ID = 1;
     }
 
     public String getName() {
         return name;
     }
 
+    public int getCurrentID(){
+        return ID;
+    }
+
     public List<Message> getMessages() {
         return messages;
     }
 
-    public void addMessage(Message message) {
-        messages.add(message);
-    }
-
-    @Override
-    public String toString() {
-        String text = "Topic " + name + " : \n";
-
-        for (Message m : messages)
-            text+=m.toString()+"\n";
-        
-        return text;        
+    public Message addMessage(String message) {
+        Message m = new Message(message, ID);
+        messages.add(m);
+        ID++;
+        return m;
     }
 
 }
