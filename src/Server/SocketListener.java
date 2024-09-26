@@ -7,9 +7,9 @@ import java.net.SocketTimeoutException;
 
 public class SocketListener implements Runnable {
     ServerSocket server;
-    Resource rsc;
+    TopicHandler rsc;
 
-    public SocketListener(ServerSocket server, Resource rsc) {
+    public SocketListener(ServerSocket server, TopicHandler rsc) {
         this.server = server;
         this.rsc = rsc;
     }

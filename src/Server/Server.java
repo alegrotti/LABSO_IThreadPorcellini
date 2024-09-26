@@ -30,7 +30,7 @@ public class Server {
              */
             ServerSocket server = new ServerSocket(port);
 
-            Resource rsc = new Resource();
+            TopicHandler rsc = new TopicHandler();
 
             Thread listenerThread = new Thread ( new SocketListener(server, rsc) );
             listenerThread.start();
@@ -45,7 +45,7 @@ public class Server {
                         closed = true;
                         break;
                     case "show":
-                        System.out.println("Topics:\n"+rsc.getTopicList());
+                        System.out.println(rsc.getTopicList());
                         break;
                     case "inspect":
                         System.out.println("Iteractive session");
