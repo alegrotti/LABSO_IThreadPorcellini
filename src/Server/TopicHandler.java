@@ -17,9 +17,11 @@ public class TopicHandler {
 
         subscribers = new HashMap<String, ArrayList<ClientHandler>>();
 
+        /* 
         subscribers.put("sport", new ArrayList<ClientHandler>());
         subscribers.put("travel", new ArrayList<ClientHandler>());
         subscribers.put("cinema", new ArrayList<ClientHandler>());
+        */
 
         information.put("sport",new Topic("sport"));
         information.put("travel",new Topic("travel"));
@@ -54,14 +56,23 @@ public class TopicHandler {
     }
 
     public synchronized void addSubscriber(String key, ClientHandler subscriber){
+        if(!information.containsKey(key))
+            information.put(key, new Topic(key));
+            subscribers.put(key, new ArrayList<ClientHandler>());
+
         this.subscribers.get(key).add(subscriber);
     }
 
-    public synchronized Message addMessage(String m, String k){
-        Message message = this.information.get(k).addMessage(m);
+    public synchronized Message addMessage(String m, String key){
 
-        for(ClientHandler ch : subscribers.get(k))
-            ch.sendMessage(message);
+        if(!information.containsKey(key))
+            information.put(key, new Topic(key));
+
+        Message message = this.information.get(key).addMessage(m);
+
+        if(subscribers.containsKey(key))
+            for(ClientHandler ch : subscribers.get(key))
+                ch.sendMessage(message);
 
         return message;
     }
