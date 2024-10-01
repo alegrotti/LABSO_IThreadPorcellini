@@ -25,8 +25,8 @@ public class ClientHandler implements Runnable {
             Scanner from = new Scanner(s.getInputStream());
             to = new PrintWriter(s.getOutputStream(), true);
             
-            System.out.println("Thread " + Thread.currentThread() + " listening...");
-            
+            System.out.println("Thread " + Thread.currentThread().getName() + " listening...");
+
             boolean closed = false;
             boolean subscriberClosed = true;
             boolean publisherClosed = true;
@@ -57,6 +57,7 @@ public class ClientHandler implements Runnable {
                                 topic = parts[1];
                                 publisherClosed = false;
                                 closed = true;
+                                rsc.addTopic(topic);
                                 messaggesPublisher = new ArrayList<Message>();
                                 break;
                             } else {
@@ -74,6 +75,9 @@ public class ClientHandler implements Runnable {
 
             while (!subscriberClosed) {
                 String request = from.nextLine();
+                
+                Thread.currentThread().setName("Client - Subscriber "+topic);
+
                 if (!Thread.interrupted()) {
                     System.out.println("Client request: " + request);
                     String[] parts = request.split(" ");
@@ -93,6 +97,9 @@ public class ClientHandler implements Runnable {
 
             while (!publisherClosed) {
                 String request = from.nextLine();
+
+                Thread.currentThread().setName("Client - Publisher "+topic);
+
                 if (!Thread.interrupted()) {
                     System.out.println("Client request: " + request);
                     String[] parts = request.split(" ");
@@ -103,10 +110,15 @@ public class ClientHandler implements Runnable {
                             messaggesPublisher.add(message);
                             break;  
                         case "list":
-                            String stamp = "Messages of the publisher:";
-                            for (Message mess : messaggesPublisher)
-                                stamp+= "\n" + mess.toString();
-                            to.println(stamp);
+                            if (messaggesPublisher.size() == 0 ){
+                                String stamp = "No messages sent by this publisher";
+                                to.println(stamp);
+                            }else{
+                                String stamp = "Messages of the publisher:";
+                                for (Message mess : messaggesPublisher)
+                                    stamp+= "\n" + mess.toString();
+                                to.println(stamp);
+                            }
                             break;  
                         case "quit":
                             to.println("quit");

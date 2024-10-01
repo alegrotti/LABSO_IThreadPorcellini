@@ -38,12 +38,22 @@ public class TopicHandler {
     }
 
     public String getMessagesList(String k) {
+        
+        if(!information.containsKey(k))
+            return "No topic existing";
+        
         String messagesList = "Messages:";
 
-        for(Message m : information.get(k).getMessages())
+        int nMess = 0;
+        for(Message m : information.get(k).getMessages()){
             messagesList += "\n" + m.toString();
+            nMess++;
+        }
 
-        return messagesList;
+        if(nMess==0)
+            return "No messages sent";
+        else
+            return messagesList;
     }
 
     public String getTopicList() {
@@ -56,10 +66,6 @@ public class TopicHandler {
     }
 
     public synchronized void addSubscriber(String key, ClientHandler subscriber){
-        if(!information.containsKey(key))
-            information.put(key, new Topic(key));
-            subscribers.put(key, new ArrayList<ClientHandler>());
-
         this.subscribers.get(key).add(subscriber);
     }
 
@@ -78,7 +84,10 @@ public class TopicHandler {
     }
 
     public synchronized void addTopic(String key){
-        this.information.computeIfAbsent(key, Topic::new );
+        if(!information.containsKey(key)){
+            information.put(key, new Topic(key));
+            subscribers.put(key, new ArrayList<ClientHandler>());
+        }
     }
 
 }
