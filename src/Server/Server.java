@@ -36,34 +36,82 @@ public class Server {
             listenerThread.start();
 
             boolean closed = false;
+            boolean inspect = false;
+            String topic = "";
+
             while (!closed) {
-                String request = userInput.nextLine();
-                System.out.println("Server request: " + request);
-                String[] parts = request.split(" ");
-                switch (parts[0]) {
-                    case "quit":
-                        closed = true;
-                        break;
-                    case "show":
-                        System.out.println(rsc.getTopicList());
-                        break;
-                    case "inspect":
-                        System.out.println("Iteractive session");
-                        break;
-                    default:
-                        System.out.println("Unknown cmd");
-                        break;
+                if(!inspect){
+                    String request = userInput.nextLine();
+                    System.out.println("Server request: " + request);
+                    String[] parts = request.split(" ");
+                    switch (parts[0]) {
+                        case "quit":
+                            closed = true;
+                            break;
+                        case "show":
+                            System.out.println(rsc.getTopicList());
+                            break;
+                        case "inspect":
+                            if (parts.length > 1) {
+                                topic = parts[1];
+                                if(rsc.containsTopic(topic)){
+                                    System.out.println("Interactive session: " + topic);
+                                    inspect = true;
+                                }
+                            } else {
+                                System.out.println("No key");
+                            }
+
+                            break;
+                        default:
+                            System.out.println("Unknown cmd");
+                            break;
+                    }
+                }else{
+                    String request = userInput.nextLine();
+                    System.out.println("Server request: " + request);
+                    String[] parts = request.split(" ");
+                    switch (parts[0]) {
+                        case "end":
+                            inspect = false;
+                            break;
+                        case "listall":
+                            System.out.println(rsc.getMessagesList(topic));
+                            break;
+                        case "delete":
+                            if (parts.length > 1) {
+                                try{
+                                    String IDtext = parts[1];
+                                    int ID = Integer.parseInt(IDtext);
+                                    rsc.deleteMessage(ID,topic);
+                                }catch(Exception e){
+                                    System.out.println("Invalid ID format");
+                                }
+                            } else {
+                                System.out.println("No ID");
+                            }
+
+                            break;
+                        default:
+                            System.out.println("Unknown cmd");
+                            break;
+                    }
                 }
+
             }
 
-            System.exit(0);
+            closeServer();
 
         } catch (IOException e) {
             System.err.println("IOException caught: " + e);
             e.printStackTrace();
-        }finally {
+        } finally {
             userInput.close();
         }
+    }
+
+    public static void closeServer(){
+        System.exit(0);
     }
 
 }

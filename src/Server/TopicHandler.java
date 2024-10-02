@@ -17,11 +17,9 @@ public class TopicHandler {
 
         subscribers = new HashMap<String, ArrayList<ClientHandler>>();
 
-        /* 
         subscribers.put("sport", new ArrayList<ClientHandler>());
         subscribers.put("travel", new ArrayList<ClientHandler>());
         subscribers.put("cinema", new ArrayList<ClientHandler>());
-        */
 
         information.put("sport",new Topic("sport"));
         information.put("travel",new Topic("travel"));
@@ -37,7 +35,7 @@ public class TopicHandler {
 
     }
 
-    public String getMessagesList(String k) {
+    public String getMessagesList(String k){
         
         if(!information.containsKey(k))
             return "No topic existing";
@@ -54,6 +52,7 @@ public class TopicHandler {
             return "No messages sent";
         else
             return messagesList;
+        
     }
 
     public String getTopicList() {
@@ -83,11 +82,21 @@ public class TopicHandler {
         return message;
     }
 
+    public synchronized void deleteMessage(int ID, String key){
+
+        information.get(key).removeMessage(ID);
+
+    }
+
     public synchronized void addTopic(String key){
         if(!information.containsKey(key)){
             information.put(key, new Topic(key));
             subscribers.put(key, new ArrayList<ClientHandler>());
         }
+    }
+
+    public boolean containsTopic(String key){
+        return information.containsKey(key);
     }
 
 }
