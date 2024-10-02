@@ -83,9 +83,7 @@ public class TopicHandler {
     }
 
     public synchronized void deleteMessage(int ID, String key){
-
         information.get(key).removeMessage(ID);
-
     }
 
     public synchronized void addTopic(String key){
