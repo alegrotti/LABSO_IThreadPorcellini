@@ -29,6 +29,8 @@ public class Server {
              * 
              */
             ServerSocket server = new ServerSocket(port);
+            System.out.println("Server is waiting for connections on port " + port 
+            		+ "\nAvailable commands: quit, show, inspect <topic>");
 
             TopicHandler rsc = new TopicHandler();
 
@@ -55,7 +57,8 @@ public class Server {
                             if (parts.length > 1) {
                                 topic = parts[1];
                                 if(rsc.containsTopic(topic)){
-                                    System.out.println("Interactive session: " + topic);
+                                    System.out.println("Interactive session: " + topic 
+                                    		+ "\nAvailable commands: listall, delete <id>, end");
                                     rsc.startInspection(topic); // inizia la sessione interattiva
                                     inspect = true;
                                 }
@@ -112,5 +115,4 @@ public class Server {
     public static void closeServer(){
         System.exit(0);
     }
-
 }

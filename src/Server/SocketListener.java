@@ -27,7 +27,7 @@ public class SocketListener implements Runnable {
 
                         Thread handlerThread = new Thread( new ClientHandler(s, rsc) );
 
-                        handlerThread.setName("Thread Client");
+                        handlerThread.setName("Client");
 
                         handlerThread.start();
                     } else {

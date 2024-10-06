@@ -47,6 +47,7 @@ public class ClientHandler implements Runnable {
                                 subscriberClosed = false;
                                 closed = true;
                                 rsc.addSubscriber(topic,this);
+                                to.println("Client has become a subscriber\n" + "Available commands: listall, quit");
                                 break;
                             } else {
                                 to.println("No key");
@@ -59,6 +60,7 @@ public class ClientHandler implements Runnable {
                                 closed = true;
                                 rsc.addTopic(topic);
                                 messaggesPublisher = new ArrayList<Message>();
+                                to.println("Client has become a publisher\n" + "Available commands: send <message>, list, listall, quit");
                                 break;
                             } else {
                                 to.println("No key");
@@ -76,7 +78,7 @@ public class ClientHandler implements Runnable {
             while (!subscriberClosed) {
                 String request = from.nextLine();
                 
-                Thread.currentThread().setName("Client - Subscriber "+topic);
+                Thread.currentThread().setName("Client - Subscriber " + topic);
 
                 if (!Thread.interrupted()) {
                     System.out.println("Client request: " + request);

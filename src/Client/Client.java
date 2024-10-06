@@ -18,7 +18,7 @@ public class Client {
             Socket s = new Socket(host, port);
             System.out.println("Connected to server");
 
-            System.out.println("Usage: extract <key> / add <key> <value>");
+            System.out.println("Available commands: publish <topic>, subscribe <topic>, show, quit");
 
             /*
              * Delega la gestione di input/output a due thread separati, uno per inviare

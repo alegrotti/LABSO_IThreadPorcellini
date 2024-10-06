@@ -85,9 +85,9 @@ public class TopicHandler {
         }
         
         if (nMess == 0) {
-        	return "Sono stati inviati 0 messaggi in questo topic";
+        	return "No messages have been sent on this topic";
         } else {
-        	return "Sono stati inviati " + nMess + " messaggi in questo topic \n" + messagesList;
+        	return nMess + " messages have been sent on this topic \n" + messagesList;
         }
     }
 
@@ -122,11 +122,12 @@ public class TopicHandler {
             information.put(key, new Topic(key));
 
         Message message = this.information.get(key).addMessage(m);
+        System.out.println("Message successfully added to the topic " + key);
 
-        if (subscribers.containsKey(key))
+        if (subscribers.containsKey(key)) 
             for (ClientHandler ch : subscribers.get(key))
                 ch.sendMessage(message);
-
+           
         return message;
     }
     
@@ -152,16 +153,35 @@ public class TopicHandler {
             return "No messages sent by this publisher";
         }
 
-        StringBuilder stamp = new StringBuilder("Messages of the publisher:");
+        String stamp = "Messages of the publisher:";
         for (Message mess : publisherMessages) {
-            stamp.append("\n").append(mess.toString());
+            stamp += "\n" + mess.toString();
         }
 
         return stamp.toString();
     }
 
     public synchronized void deleteMessage(int ID, String key){
-        information.get(key).removeMessage(ID);
+    	if (!information.containsKey(key)) {
+            System.out.println("Error: the topic " + key + " does not exist");
+            return;
+        }
+    	
+    	Topic topic = information.get(key);
+    	boolean messageFound = false;
+    	 
+    	for (Message message : topic.getMessages()) {
+            if (message.getID() == ID) {
+            	topic.removeMessage(ID);
+            	System.out.println("Message with ID " + ID + " successfully deleted from the topic " + key);
+            	messageFound = true;
+            	break;
+            } 
+        }
+    	
+    	if (!messageFound) {
+            System.out.println("Error: message with ID " + ID + " does not exist in the topic " + key);
+        }
     }
 
     public synchronized void addTopic(String key){
