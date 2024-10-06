@@ -36,7 +36,7 @@ public class ClientReceiver implements Runnable {
             this.sender.interrupt();
             System.out.println("Client closed.");
             System.exit(0);
-        }finally {
+        } finally {
             System.out.println("Receiver closed.");
         }
     }

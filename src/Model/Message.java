@@ -30,11 +30,10 @@ public class Message {
 
     @Override
     public String toString() {
-
         String printString = "";
         printString += "  - ID: " + getID() + "\n"
-                    +"    Text: " + getText() + "\n"
-                    +"    Date: " + getTimestamp() ;
+                    + "    Text: " + getText() + "\n"
+                    + "    Date: " + getTimestamp() ;
         return printString;
     }
 }

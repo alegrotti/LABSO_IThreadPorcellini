@@ -33,13 +33,11 @@ public class ClientSender implements Runnable {
                     if (request.equals("quit")) {
                         break;
                     }
-
                 } else {
                     //to.println("quit");
                     userInput.close();
                     break;
                 }
-
             }
         } catch (IOException e) {
             System.err.println("IOException caught: " + e);
@@ -49,5 +47,4 @@ public class ClientSender implements Runnable {
             userInput.close();
         }
     }
-
 }

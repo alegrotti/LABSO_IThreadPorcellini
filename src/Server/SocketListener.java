@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class SocketListener implements Runnable {
+	
     ServerSocket server;
     TopicHandler rsc;
 
@@ -20,7 +21,6 @@ public class SocketListener implements Runnable {
             this.server.setSoTimeout(5000);
             while (!Thread.interrupted()) {
                 try {
-
                     Socket s = this.server.accept();
                     if (!Thread.interrupted()) {
                         System.out.println("Client connected");
@@ -45,7 +45,5 @@ public class SocketListener implements Runnable {
             System.err.println("SocketListener: IOException caught: " + e);
             e.printStackTrace();
         }
-
     }
-
 }

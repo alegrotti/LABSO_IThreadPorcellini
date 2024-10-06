@@ -98,7 +98,7 @@ public class ClientHandler implements Runnable {
             while (!publisherClosed) {
                 String request = from.nextLine();
 
-                Thread.currentThread().setName("Client - Publisher "+topic);
+                Thread.currentThread().setName("Client - Publisher " + topic);
 
                 if (!Thread.interrupted()) {
                     System.out.println("Client request: " + request);
@@ -110,15 +110,7 @@ public class ClientHandler implements Runnable {
                             messaggesPublisher.add(message);
                             break;  
                         case "list":
-                            if (messaggesPublisher.size() == 0 ){
-                                String stamp = "No messages sent by this publisher";
-                                to.println(stamp);
-                            }else{
-                                String stamp = "Messages of the publisher:";
-                                for (Message mess : messaggesPublisher)
-                                    stamp+= "\n" + mess.toString();
-                                to.println(stamp);
-                            }
+                        	to.println(rsc.getPublisherMessages(topic, messaggesPublisher));
                             break;  
                         case "quit":
                             to.println("quit");
@@ -133,7 +125,6 @@ public class ClientHandler implements Runnable {
                 }
             }
 
-
             from.close();
             to.close();
             
@@ -146,7 +137,6 @@ public class ClientHandler implements Runnable {
     }
 
     public void sendMessage(Message m){
-        to.println("New message on the Topic:\n"+m.toString());
+        to.println("New message on the Topic:\n" + m.toString());
     }
-
 }

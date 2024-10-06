@@ -56,6 +56,7 @@ public class Server {
                                 topic = parts[1];
                                 if(rsc.containsTopic(topic)){
                                     System.out.println("Interactive session: " + topic);
+                                    rsc.startInspection(topic); // inizia la sessione interattiva
                                     inspect = true;
                                 }
                             } else {
@@ -67,12 +68,13 @@ public class Server {
                             System.out.println("Unknown cmd");
                             break;
                     }
-                }else{
+                } else {
                     String request = userInput.nextLine();
                     System.out.println("Server request: " + request);
                     String[] parts = request.split(" ");
                     switch (parts[0]) {
                         case "end":
+                        	rsc.endInspection(); // termina la sessione interattiva
                             inspect = false;
                             break;
                         case "listall":
@@ -84,24 +86,21 @@ public class Server {
                                     String IDtext = parts[1];
                                     int ID = Integer.parseInt(IDtext);
                                     rsc.deleteMessage(ID,topic);
-                                }catch(Exception e){
+                                } catch (Exception e) {
                                     System.out.println("Invalid ID format");
                                 }
                             } else {
                                 System.out.println("No ID");
                             }
-
                             break;
                         default:
                             System.out.println("Unknown cmd");
                             break;
                     }
                 }
-
             }
-
             closeServer();
-
+            
         } catch (IOException e) {
             System.err.println("IOException caught: " + e);
             e.printStackTrace();
