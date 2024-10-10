@@ -57,7 +57,7 @@ public class Server {
                             if (parts.length > 1) {
                                 topic = parts[1];
                                 if(rsc.containsTopic(topic)){
-                                    System.out.println("Interactive session: " + topic 
+                                    System.out.println("Open interactive session on topic " + topic 
                                     		+ "\nAvailable commands: listall, delete <id>, end");
                                     rsc.startInspection(topic); // inizia la sessione interattiva
                                     inspect = true;
@@ -77,8 +77,9 @@ public class Server {
                     String[] parts = request.split(" ");
                     switch (parts[0]) {
                         case "end":
-                        	rsc.endInspection(); // termina la sessione interattiva
+                            rsc.endInspection(); // termina la sessione interattiva
                             inspect = false;
+                            System.out.println("Closed interactive session on topic " + topic );
                             break;
                         case "listall":
                             System.out.println(rsc.getMessagesList(topic));
