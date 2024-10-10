@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 public class SocketListener implements Runnable {
 	
     ServerSocket server;
     TopicHandler rsc;
+    ArrayList<Thread> children = new ArrayList<>();
 
     public SocketListener(ServerSocket server, TopicHandler rsc) {
         this.server = server;
@@ -30,6 +32,8 @@ public class SocketListener implements Runnable {
                         handlerThread.setName("Client");
 
                         handlerThread.start();
+
+                        this.children.add(handlerThread);
                     } else {
                         s.close();
                         break;
@@ -44,6 +48,12 @@ public class SocketListener implements Runnable {
         } catch (IOException e) {
             System.err.println("SocketListener: IOException caught: " + e);
             e.printStackTrace();
+        }
+
+        System.out.println("Interrupting children...");
+        for (Thread child : this.children) {
+            System.out.println("Interrupting " + child.getName() + "...");
+            child.interrupt();
         }
     }
 }

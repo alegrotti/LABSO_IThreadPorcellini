@@ -72,6 +72,9 @@ public class ClientHandler implements Runnable {
                         default:
                             to.println("Unknown command");
                     }
+                } else {
+                    to.println("quit");
+                    break;
                 }
             }
 
@@ -94,6 +97,9 @@ public class ClientHandler implements Runnable {
                         default:
                             to.println("Unknown command");
                     }
+                } else {
+                    to.println("quit");
+                    break;
                 }
             }
 
@@ -124,6 +130,9 @@ public class ClientHandler implements Runnable {
                         default:
                             to.println("Unknown command");
                     }
+                } else {
+                    to.println("quit");
+                    break;
                 }
             }
 

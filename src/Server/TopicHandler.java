@@ -39,6 +39,7 @@ public class TopicHandler {
         information.get("sport").addMessage(m1);
         information.get("sport").addMessage(m2);
         information.get("cinema").addMessage(m3);
+
     }
     
     public synchronized boolean isTopicInInspect(String topic) {

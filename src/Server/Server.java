@@ -103,7 +103,15 @@ public class Server {
                     }
                 }
             }
-            closeServer();
+
+            try {
+                listenerThread.interrupt();
+                listenerThread.join();
+            } catch (InterruptedException e) {
+                return;
+            }
+
+            System.out.println("Server thread terminated");
             
         } catch (IOException e) {
             System.err.println("IOException caught: " + e);
@@ -113,7 +121,4 @@ public class Server {
         }
     }
 
-    public static void closeServer(){
-        System.exit(0);
-    }
 }
