@@ -27,7 +27,7 @@ public class Topic {
         return messages;
     }
 
-    public void removeMessage(int ID) {
+    public boolean removeMessage(int ID) {
         int pos = -1;
         
         for(int i = 0; i < messages.size(); i++)
@@ -36,8 +36,12 @@ public class Topic {
                 break;
             }
 
-        if(pos != -1)
+        if(pos != -1){
             messages.remove(pos);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Message addMessage(String message) {

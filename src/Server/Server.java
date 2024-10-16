@@ -17,17 +17,6 @@ public class Server {
         Scanner userInput = new Scanner(System.in);
 
         try {
-            /*
-             * Differenza tra ServerSocket e Socket: il primo è usato per aspettare,
-             * passivamente, connessioni dall'esterno; il secondo è usato per connettersi
-             * attivamente ad un servizio in ascolto in un certo host, su una certa porta.
-             * 
-             * 
-             * server.accept() rimane in attesa di una richiesta di connessione; se questa
-             * arriva e va a buon fine (i.e. non solleva eccezioni), restituisce un socket
-             * che verrà utilizzato per comunicare con questo specifico client.
-             * 
-             */
             ServerSocket server = new ServerSocket(port);
             System.out.println("Server is waiting for connections on port " + port 
             		+ "\nAvailable commands: quit, show, inspect <topic>");
@@ -49,6 +38,7 @@ public class Server {
                     switch (parts[0]) {
                         case "quit":
                             closed = true;
+                            rsc.closeServer();
                             break;
                         case "show":
                             System.out.println(rsc.getTopicList());
@@ -77,7 +67,7 @@ public class Server {
                     String[] parts = request.split(" ");
                     switch (parts[0]) {
                         case "end":
-                            rsc.endInspection(); // termina la sessione interattiva
+                            rsc.endInspection(topic); // termina la sessione interattiva
                             inspect = false;
                             System.out.println("Closed interactive session on topic " + topic );
                             break;

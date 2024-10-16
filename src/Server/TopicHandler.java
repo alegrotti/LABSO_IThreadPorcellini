@@ -3,8 +3,8 @@ package Server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import Model.Topic;
 import Model.Message;
 
@@ -12,17 +12,18 @@ public class TopicHandler {
 
     private HashMap<String, Topic> information;
     private HashMap<String, ArrayList<ClientHandler>> subscribers;
-    private Lock inspectLock;
-    private String topicInInspect; // topic che è in sessione interattiva
+    private HashMap<String, ReentrantReadWriteLock> topicLocks;
+    private ReentrantReadWriteLock editTopic;
 
     public TopicHandler() {
 
         this.information = new HashMap<>();
         this.subscribers = new HashMap<>();
-        this.inspectLock = new ReentrantLock();
-        this.topicInInspect = null;
+        this.topicLocks = new HashMap<>();
 
         subscribers = new HashMap<String, ArrayList<ClientHandler>>();
+
+        editTopic = new ReentrantReadWriteLock();
 
         subscribers.put("sport", new ArrayList<ClientHandler>());
         subscribers.put("travel", new ArrayList<ClientHandler>());
@@ -32,6 +33,10 @@ public class TopicHandler {
         information.put("travel",new Topic("travel"));
         information.put("cinema",new Topic("cinema"));
         
+        topicLocks.put("sport", new ReentrantReadWriteLock());
+        topicLocks.put("travel", new ReentrantReadWriteLock());
+        topicLocks.put("cinema", new ReentrantReadWriteLock());
+
         String m1 = "Il mio sport preferito è il cricket";
         String m2 = "Siuuuuuuuuuuuuum";
         String m3 = "È un ciiiiiiiinema";
@@ -42,41 +47,28 @@ public class TopicHandler {
 
     }
     
-    public synchronized boolean isTopicInInspect(String topic) {
-        return topic.equals(this.topicInInspect);
+    public void startInspection(String topic) {
+        if (containsTopic(topic)) {
+            topicLocks.get(topic).writeLock().lock();
+        } else {
+            System.out.println("Topic does not exist");
+        }
     }
 
-    public synchronized void startInspection(String topic) {
-        this.topicInInspect = topic;
-        inspectLock.lock(); // blocca il lock per il topic in ispezione
-    }
-
-    public synchronized void endInspection() {
-        this.topicInInspect = null;
-        inspectLock.unlock(); // sblocca il lock per il topic al termine della sessione interattiva
+    public void endInspection(String topic) {
+        topicLocks.get(topic).writeLock().unlock();
     }
 
     public String getMessagesList(String key) {
-        if (isTopicInInspect(key)) {
-        	// il thread resta bloccato in attesa che il lock venga rilasciato dal server al termine della sessione interattiva 
-        	// e poi lo acquisisce
-            inspectLock.lock(); 
-            try {
-                return retrieveMessagesList(key);
-            } finally {
-                inspectLock.unlock(); // sblocca il lock (in ogni caso) dopo che la lista di messaggi è stata recuperata
-            }
-        } else {
-            // Se il topic non è in ispezione, ritorna semplicemente i messaggi
+        topicLocks.get(key).readLock().lock();
+        try {
             return retrieveMessagesList(key);
+        } finally {
+            topicLocks.get(key).readLock().unlock();
         }
     }
 
     private String retrieveMessagesList(String key) {
-        if (!information.containsKey(key)) {
-            return "No topic existing";
-        }
-
         String messagesList = "Messages:";
         int nMess = 0;
 
@@ -93,65 +85,61 @@ public class TopicHandler {
     }
 
     public String getTopicList() {
+        editTopic.readLock().lock();
+        
         String topicList = "Topics:";
-
         for(String s : information.keySet())
             topicList += "\n - " + s ;
-
+        
+        editTopic.readLock().unlock();
+        
         return topicList;
     }
 
-    public synchronized void addSubscriber(String key, ClientHandler subscriber){
-        this.subscribers.get(key).add(subscriber);
+    public void addSubscriber(String key, ClientHandler subscriber){
+        if (!containsTopic(key))
+            addTopic(key);
+        
+        topicLocks.get(key).writeLock().lock();
+        try {
+            this.subscribers.get(key).add(subscriber);
+        } finally {
+            topicLocks.get(key).writeLock().unlock();
+        }
+        
     }
 
     public Message addMessage(String m, String key) {
-        if (isTopicInInspect(key)) {
-            inspectLock.lock();  // attende il rilascio del lock
-            try {
-            	return createAndSendMessage(m, key);
-            } finally {
-                inspectLock.unlock(); // rilascia il lock dopo l'operazione
-            }
-        } else {
-        	return createAndSendMessage(m, key);
+        topicLocks.get(key).writeLock().lock();
+        try {
+            return createAndSendMessage(m, key);
+        } finally {
+            topicLocks.get(key).writeLock().unlock();
         }
     }
     
     private Message createAndSendMessage(String m, String key) {
-    	if (!information.containsKey(key))
-            information.put(key, new Topic(key));
-
-        Message message = this.information.get(key).addMessage(m);
+    	Message message = this.information.get(key).addMessage(m);
         System.out.println("Message successfully added to the topic " + key);
 
-        if (subscribers.containsKey(key)) 
-            for (ClientHandler ch : subscribers.get(key))
-                ch.sendMessage(message);
+        for (ClientHandler ch : subscribers.get(key))
+            ch.sendMessage(message);
            
         return message;
     }
     
     public String getPublisherMessages(String topic, List<Message> publisherMessages) {
-        if (isTopicInInspect(topic)) {
-            inspectLock.lock();
-            try {
-                return retrievePublisherMessages(topic, publisherMessages);
-            } finally {
-                inspectLock.unlock();
-            }
-        } else {
+        topicLocks.get(topic).readLock().lock();
+        try {
             return retrievePublisherMessages(topic, publisherMessages);
+        } finally {
+            topicLocks.get(topic).readLock().unlock();
         }
     }
 
     private String retrievePublisherMessages(String topic, List<Message> publisherMessages) {
-        if (!information.containsKey(topic)) {
-            return "No topic existing";
-        }
-
         if (publisherMessages.size() == 0) {
-            return "No messages sent by this publisher";
+        return "No messages sent by this publisher";
         }
 
         String stamp = "Messages of the publisher:";
@@ -162,37 +150,37 @@ public class TopicHandler {
         return stamp.toString();
     }
 
-    public synchronized void deleteMessage(int ID, String key){
-    	if (!information.containsKey(key)) {
-            System.out.println("Error: the topic " + key + " does not exist");
-            return;
-        }
-    	
-    	Topic topic = information.get(key);
-    	boolean messageFound = false;
-    	 
-    	for (Message message : topic.getMessages()) {
-            if (message.getID() == ID) {
-            	topic.removeMessage(ID);
-            	System.out.println("Message with ID " + ID + " successfully deleted from the topic " + key);
-            	messageFound = true;
-            	break;
-            } 
-        }
-    	
-    	if (!messageFound) {
-            System.out.println("Error: message with ID " + ID + " does not exist in the topic " + key);
-        }
+    public void deleteMessage(int ID, String key){
+    	topicLocks.get(key).writeLock().lock();
+        try {
+            if(information.get(key).removeMessage(ID))
+                System.out.println("Message with ID " + ID + " successfully deleted from the topic " + key);
+            else    
+                System.out.println("Error: message with ID " + ID + " does not exist in the topic " + key);
+        } finally {
+            topicLocks.get(key).writeLock().unlock();
+        }  
     }
 
-    public synchronized void addTopic(String key){
+    public void addTopic(String key){
+        editTopic.writeLock().lock();
         if(!information.containsKey(key)){
             information.put(key, new Topic(key));
             subscribers.put(key, new ArrayList<ClientHandler>());
+            topicLocks.put(key, new ReentrantReadWriteLock());
         }
+        editTopic.writeLock().unlock();
     }
 
     public boolean containsTopic(String key){
-        return information.containsKey(key);
+        editTopic.readLock().lock();
+        boolean info = information.containsKey(key);
+        editTopic.readLock().unlock();
+        return info;
+    }
+
+    public void closeServer(){
+        for (String topic : topicLocks.keySet())
+            topicLocks.get(topic).writeLock().lock();
     }
 }
