@@ -49,9 +49,8 @@ public class ClientHandler implements Runnable {
                                 rsc.addSubscriber(topic,this);
                                 to.println("Client has become a subscriber\n" + "Available commands: listall, quit");
                                 break;
-                            } else {
+                            } else
                                 to.println("No key");
-                            }
                             break;
                         case "publish" : 
                             if (parts.length > 1) {
@@ -62,9 +61,8 @@ public class ClientHandler implements Runnable {
                                 messaggesPublisher = new ArrayList<Message>();
                                 to.println("Client has become a publisher\n" + "Available commands: send <message>, list, listall, quit");
                                 break;
-                            } else {
+                            } else
                                 to.println("No key");
-                            }
                             break;
                         case "show" :
                             to.println(rsc.getTopicList());
@@ -143,7 +141,6 @@ public class ClientHandler implements Runnable {
             System.out.println("Client Closed");
         } catch (IOException e) {
             System.err.println("ClientHandler: IOException caught: " + e);
-            e.printStackTrace();
         }
     }
 

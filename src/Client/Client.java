@@ -20,11 +20,6 @@ public class Client {
 
             System.out.println("Available commands: publish <topic>, subscribe <topic>, show, quit");
 
-            /*
-             * Delega la gestione di input/output a due thread separati, uno per inviare
-             * messaggi e uno per leggerli
-             * 
-             */
             Thread sender = new Thread(new ClientSender(s));
             Thread receiver = new Thread(new ClientReceiver(s, sender));
 
@@ -32,15 +27,11 @@ public class Client {
             receiver.start();
 
             try {
-                /* rimane in attesa che sender e receiver terminino la loro esecuzione */
                 receiver.join();
                 sender.join();
                 s.close();
                 System.out.println("Socket closed.");
             } catch (InterruptedException e) {
-                /*
-                 * se qualcuno interrompe questo thread nel frattempo, terminiamo
-                 */
                 return;
             }
 

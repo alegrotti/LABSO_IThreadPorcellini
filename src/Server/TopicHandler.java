@@ -47,11 +47,13 @@ public class TopicHandler {
 
     }
     
-    public void startInspection(String topic) {
+    public boolean startInspection(String topic) {
         if (containsTopic(topic)) {
             topicLocks.get(topic).writeLock().lock();
+            return true;
         } else {
             System.out.println("Topic does not exist");
+            return false;
         }
     }
 
@@ -98,7 +100,7 @@ public class TopicHandler {
 
     public synchronized void addSubscriber(String key, ClientHandler subscriber){
         addTopic(key);
-        
+
         this.subscribers.get(key).add(subscriber);
     }
 
@@ -156,13 +158,15 @@ public class TopicHandler {
     }
 
     public void addTopic(String key){
-        editTopic.writeLock().lock();
-        if(!information.containsKey(key)){
-            information.put(key, new Topic(key));
-            subscribers.put(key, new ArrayList<ClientHandler>());
-            topicLocks.put(key, new ReentrantReadWriteLock());
+        if(!containsTopic(key)){
+            editTopic.writeLock().lock();
+            if(!information.containsKey(key)){
+                information.put(key, new Topic(key));
+                subscribers.put(key, new ArrayList<ClientHandler>());
+                topicLocks.put(key, new ReentrantReadWriteLock());
+            }
+            editTopic.writeLock().unlock();
         }
-        editTopic.writeLock().unlock();
     }
 
     public boolean containsTopic(String key){

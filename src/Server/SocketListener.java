@@ -47,7 +47,6 @@ public class SocketListener implements Runnable {
             this.server.close();
         } catch (IOException e) {
             System.err.println("SocketListener: IOException caught: " + e);
-            e.printStackTrace();
         }
 
         System.out.println("Interrupting children...");

@@ -46,17 +46,14 @@ public class Server {
                         case "inspect":
                             if (parts.length > 1) {
                                 topic = parts[1];
-                                if(rsc.containsTopic(topic)){
-                                    rsc.startInspection(topic);
+                                if(rsc.startInspection(topic)){
                                     System.out.println("Open interactive session on topic " + topic 
                                     		+ "\nAvailable commands: listall, delete <id>, end");
                                     inspect = true;
-                                } else {
+                                } else
                                     System.out.println("Error: no existing topic with this name");
-                                }
-                            } else {
+                            } else
                                 System.out.println("No key");
-                            }
                             break;
                         default:
                             System.out.println("Unknown cmd");
@@ -84,9 +81,8 @@ public class Server {
                                 } catch (Exception e) {
                                     System.out.println("Invalid ID format");
                                 }
-                            } else {
+                            } else
                                 System.out.println("No ID");
-                            }
                             break;
                         default:
                             System.out.println("Unknown cmd");
@@ -105,8 +101,7 @@ public class Server {
             System.out.println("Server thread terminated");
             
         } catch (IOException e) {
-            System.err.println("IOException caught: " + e);
-            e.printStackTrace();
+            System.err.println("Connection denied - Check port");
         } finally {
             userInput.close();
         }
