@@ -96,17 +96,10 @@ public class TopicHandler {
         return topicList;
     }
 
-    public void addSubscriber(String key, ClientHandler subscriber){
-        if (!containsTopic(key))
-            addTopic(key);
+    public synchronized void addSubscriber(String key, ClientHandler subscriber){
+        addTopic(key);
         
-        topicLocks.get(key).writeLock().lock();
-        try {
-            this.subscribers.get(key).add(subscriber);
-        } finally {
-            topicLocks.get(key).writeLock().unlock();
-        }
-        
+        this.subscribers.get(key).add(subscriber);
     }
 
     public Message addMessage(String m, String key) {

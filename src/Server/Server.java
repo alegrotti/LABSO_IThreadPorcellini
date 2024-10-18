@@ -47,15 +47,16 @@ public class Server {
                             if (parts.length > 1) {
                                 topic = parts[1];
                                 if(rsc.containsTopic(topic)){
+                                    rsc.startInspection(topic);
                                     System.out.println("Open interactive session on topic " + topic 
                                     		+ "\nAvailable commands: listall, delete <id>, end");
-                                    rsc.startInspection(topic); // inizia la sessione interattiva
                                     inspect = true;
+                                } else {
+                                    System.out.println("Error: no existing topic with this name");
                                 }
                             } else {
                                 System.out.println("No key");
                             }
-
                             break;
                         default:
                             System.out.println("Unknown cmd");
@@ -67,7 +68,7 @@ public class Server {
                     String[] parts = request.split(" ");
                     switch (parts[0]) {
                         case "end":
-                            rsc.endInspection(topic); // termina la sessione interattiva
+                            rsc.endInspection(topic);
                             inspect = false;
                             System.out.println("Closed interactive session on topic " + topic );
                             break;
