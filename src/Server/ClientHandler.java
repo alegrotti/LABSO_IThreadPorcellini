@@ -74,7 +74,7 @@ public class ClientHandler implements Runnable {
                                 to.println("Unknown command");
                         }
                     } catch (Exception e){
-                        System.out.println("Error in processing client request");
+                        System.err.println("[ClientHandler] Error in processing client request: "+e.getMessage());
                     }
                 } else {
                     to.println("quit");
@@ -103,7 +103,7 @@ public class ClientHandler implements Runnable {
                                 to.println("Unknown command");
                         }
                     } catch (Exception e){
-                        System.out.println("Error in processing client request");
+                        System.err.println("[ClientHandler] Error in processing client request: "+e.getMessage());
                     }
                 } else {
                     to.println("quit");
@@ -140,7 +140,7 @@ public class ClientHandler implements Runnable {
                                 to.println("Unknown command");
                         }
                     } catch (Exception e){
-                        System.out.println("Error in processing client request");
+                        System.err.println("[ClientHandler] Error in processing client request: "+e.getMessage());
                     }
                 } else {
                     to.println("quit");
@@ -148,7 +148,7 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ClientHandler exception: an error occurred during client communication.");
+            System.err.println("[ClientHandler] An error occurred during client communication: "+e.getMessage());
         } finally {
             if (from != null) {
                 from.close();
@@ -160,7 +160,7 @@ public class ClientHandler implements Runnable {
                 try {
                     s.close();
                 } catch (IOException e) {
-                    System.err.println("Error closing socket.");
+                    System.err.println("[ClientHandler] Error closing socket: "+e.getMessage());
                 }
             }
             System.out.println("Client handler closed.");

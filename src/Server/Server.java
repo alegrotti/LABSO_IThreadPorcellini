@@ -63,7 +63,7 @@ public class Server {
                                 break;
                         }
                     } catch (Exception e) {
-                        System.out.println("Error processing server request");
+                        System.err.println("[Server] Error processing server request: "+e.getMessage());
                     }
                 } else {
                     String request = userInput.nextLine();
@@ -97,7 +97,7 @@ public class Server {
                                 break;
                         }
                     } catch (Exception e) {
-                        System.out.println("Error processing interactive server request");
+                        System.err.println("[Server] Error processing interactive server request: "+e.getMessage());
                     }
                 }
             }
@@ -106,13 +106,13 @@ public class Server {
                 listenerThread.interrupt();
                 listenerThread.join();
             } catch (InterruptedException e) {
-                System.err.println("Server thread interrupted.");
+                System.err.println("[Server] Server thread interrupted.");
             }
 
             System.out.println("Server thread terminated");
 
         } catch (IOException e) {
-            System.err.println("Connection denied - Check port");
+            System.err.println("[Server] Connection denied - Check port: "+e.getMessage());
         } finally {
             userInput.close();
         }

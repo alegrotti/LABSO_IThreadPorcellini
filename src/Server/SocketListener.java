@@ -44,15 +44,22 @@ public class SocketListener implements Runnable {
                     break;
                 }
             }
-            this.server.close();
         } catch (IOException e) {
-            System.err.println("SocketListener: IOException caught: " + e);
-        }
+            System.err.println("[SocketListener] IOException caught: "+e.getMessage());
+        } finally {
+            System.out.println("Closing server and interrupting client handlers...");
+            try {
+                this.server.close();
+            } catch (IOException e) {
+                System.err.println("[SocketListener] Error closing server socket: "+e.getMessage());
+            }
 
-        System.out.println("Interrupting children...");
-        for (Thread child : this.children) {
-            System.out.println("Interrupting " + child.getName() + "...");
-            child.interrupt();
+            System.out.println("Interrupting children...");
+            for (Thread child : this.children) {
+                System.out.println("\t- Interrupting " + child.getName() + "...");
+                child.interrupt();
+            }
         }
+        System.out.println("SocketListener terminated.");
     }
 }

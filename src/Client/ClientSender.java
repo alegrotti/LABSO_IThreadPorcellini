@@ -32,10 +32,9 @@ public class ClientSender implements Runnable {
                 }
             }
         } catch (IOException e) {
-            System.err.println("IOException caught: " + e);
+            System.err.println("[ClientSender] Error while communicating with Server: "+e.getMessage());
         } finally {
             System.out.println("Sender closed.");
-            //userInput.close();
         }
     }
 }

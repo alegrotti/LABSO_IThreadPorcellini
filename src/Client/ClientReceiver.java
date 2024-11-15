@@ -29,9 +29,9 @@ public class ClientReceiver implements Runnable {
                     System.out.println(response);
             }
         } catch (NoSuchElementException e) {
-            System.err.println("Error in the connection with server.");
+            System.err.println("[ClientReceiver] Error in the connection with server: "+e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error in the communication with server");
+            System.err.println("[ClientReceiver] Error while communicating with server: "+e.getMessage());
         } finally {
             if (from != null) {
                 from.close();

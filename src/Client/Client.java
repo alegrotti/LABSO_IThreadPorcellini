@@ -30,7 +30,7 @@ public class Client {
             receiver.join();
             sender.join();
         } catch (IOException e) {
-            System.err.println("Connection denied - Check address and port");
+            System.err.println("[Client] Connection denied - Check address and port: "+e.getMessage());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
@@ -39,7 +39,7 @@ public class Client {
                     s.close();
                     System.out.println("Socket closed.");
                 } catch (IOException e) {
-                    System.err.println("Failed to close socket: " + e.getMessage());
+                    System.err.println("[Client] Failed to close socket: "+e.getMessage());
                 }
             }
         }
