@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import Model.Topic;
 import Model.Message;
 
@@ -102,6 +101,8 @@ public class TopicHandler {
         addTopic(key);
 
         this.subscribers.get(key).add(subscriber);
+
+        notifyAll();
     }
 
     public Message addMessage(String m, String key) {

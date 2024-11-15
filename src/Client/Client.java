@@ -13,9 +13,10 @@ public class Client {
 
         String host = args[0];
         int port = Integer.parseInt(args[1]);
+        Socket s = null;
 
         try {
-            Socket s = new Socket(host, port);
+            s = new Socket(host, port);
             System.out.println("Connected to server");
 
             System.out.println("Available commands: publish <topic>, subscribe <topic>, show, quit");
@@ -26,17 +27,21 @@ public class Client {
             sender.start();
             receiver.start();
 
-            try {
-                receiver.join();
-                sender.join();
-                s.close();
-                System.out.println("Socket closed.");
-            } catch (InterruptedException e) {
-                return;
-            }
-
+            receiver.join();
+            sender.join();
         } catch (IOException e) {
             System.err.println("Connection denied - Check address and port");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (s != null && !s.isClosed()) {
+                try {
+                    s.close();
+                    System.out.println("Socket closed.");
+                } catch (IOException e) {
+                    System.err.println("Failed to close socket: " + e.getMessage());
+                }
+            }
         }
     }
 }

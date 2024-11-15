@@ -11,7 +11,7 @@ public class Message {
 
     public Message(String text, int ID) { 
         this.text = text;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - H:m:s");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
         this.date = dateFormat.format(new Date());
         this.ID = ID;
     }
@@ -30,10 +30,10 @@ public class Message {
 
     @Override
     public String toString() {
-        String printString = "";
-        printString += "  - ID: " + getID() + "\n"
-                    + "    Text: " + getText() + "\n"
-                    + "    Date: " + getTimestamp() ;
-        return printString;
+        StringBuilder printString = new StringBuilder();
+        printString.append("  - ID: ").append(getID()).append("\n")
+                .append("    Text: ").append(getText()).append("\n")
+                .append("    Date: ").append(getTimestamp());
+        return printString.toString();
     }
 }

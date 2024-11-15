@@ -24,24 +24,11 @@ public class Topic {
     }
 
     public List<Message> getMessages() {
-        return messages;
+        return new ArrayList<>(messages);
     }
 
     public boolean removeMessage(int ID) {
-        int pos = -1;
-        
-        for(int i = 0; i < messages.size(); i++)
-            if(messages.get(i).getID()==ID){
-                pos = i;
-                break;
-            }
-
-        if(pos != -1){
-            messages.remove(pos);
-            return true;
-        } else {
-            return false;
-        }
+        return messages.removeIf(m -> m.getID() == ID);
     }
 
     public Message addMessage(String message) {

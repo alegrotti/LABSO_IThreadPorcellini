@@ -35,7 +35,7 @@ public class ClientSender implements Runnable {
             System.err.println("IOException caught: " + e);
         } finally {
             System.out.println("Sender closed.");
-            userInput.close();
+            //userInput.close();
         }
     }
 }
