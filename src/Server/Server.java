@@ -39,7 +39,7 @@ public class Server {
                         switch (parts[0]) {
                             case "quit":
                                 closed = true;
-                                rsc.closeServer();
+                                //rsc.closeServer();
                                 break;
                             case "show":
                                 System.out.println(rsc.getTopicList());

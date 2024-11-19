@@ -174,9 +174,11 @@ public class TopicHandler {
         }
     }
 
+    /*
     public void closeServer() {
         for (ReentrantReadWriteLock lock : topicLocks.values()) {
             lock.writeLock().lock();
         }
     }
+    */
 }
