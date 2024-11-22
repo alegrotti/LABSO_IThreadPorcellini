@@ -37,7 +37,7 @@ public class TopicHandler {
         information.get("cinema").addMessage("È un ciiiiiiiinema");
     }
 
-    public boolean startInspection(String topic) {
+    public boolean startInspection(String topic) throws InterruptedException{
         if (containsTopic(topic)) {
             topicLocks.get(topic).writeLock().lock();
             return true;
@@ -152,7 +152,7 @@ public class TopicHandler {
 
     public void addTopic(String key) throws InterruptedException{
         if (!containsTopic(key)) {
-            editTopic.writeLock().lock();
+            editTopic.writeLock().lockInterruptibly();
             try {
                 if (!information.containsKey(key)) {
                     information.put(key, new Topic(key));
@@ -165,8 +165,8 @@ public class TopicHandler {
         }
     }
 
-    public boolean containsTopic(String key) {
-        editTopic.readLock().lock();
+    public boolean containsTopic(String key) throws InterruptedException{
+        editTopic.readLock().lockInterruptibly();
         try {
             return information.containsKey(key);
         } finally {
