@@ -73,8 +73,9 @@ public class ClientHandler implements Runnable {
                             default:
                                 to.println("Unknown command");
                         }
-                    } catch (Exception e){
-                        System.err.println("[ClientHandler] Error in processing client request: "+e.getMessage());
+                    }catch(InterruptedException e){
+                        to.println("quit");
+                        break;
                     }
                 } else {
                     to.println("quit");
@@ -102,8 +103,10 @@ public class ClientHandler implements Runnable {
                             default:
                                 to.println("Unknown command");
                         }
-                    } catch (Exception e){
+                    } catch (InterruptedException e){
                         System.err.println("[ClientHandler] Error in processing client request: "+e.getMessage());
+                        to.println("quit");
+                        break;
                     }
                 } else {
                     to.println("quit");
@@ -139,8 +142,10 @@ public class ClientHandler implements Runnable {
                             default:
                                 to.println("Unknown command");
                         }
-                    } catch (Exception e){
+                    } catch (InterruptedException e){
                         System.err.println("[ClientHandler] Error in processing client request: "+e.getMessage());
+                        to.println("quit");
+                        break;
                     }
                 } else {
                     to.println("quit");

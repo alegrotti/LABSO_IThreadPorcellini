@@ -53,8 +53,8 @@ public class TopicHandler {
         }
     }
 
-    public String getMessagesList(String key) {
-        topicLocks.get(key).readLock().lock();
+    public String getMessagesList(String key) throws InterruptedException{
+        topicLocks.get(key).readLock().lockInterruptibly();
         try {
             return retrieveMessagesList(key);
         } finally {
@@ -75,8 +75,8 @@ public class TopicHandler {
                           : nMess + " messages have been sent on this topic \n" + messagesList;
     }
 
-    public String getTopicList() {
-        editTopic.readLock().lock();
+    public String getTopicList() throws InterruptedException{
+        editTopic.readLock().lockInterruptibly();
         try {
             StringBuilder topicList = new StringBuilder("Topics:");
             for (String s : information.keySet()) {
@@ -88,14 +88,14 @@ public class TopicHandler {
         }
     }
 
-    public synchronized void addSubscriber(String key, ClientHandler subscriber) {
+    public synchronized void addSubscriber(String key, ClientHandler subscriber) throws InterruptedException{
         addTopic(key);
         this.subscribers.get(key).add(subscriber);
         notifyAll();
     }
 
-    public Message addMessage(String m, String key) {
-        topicLocks.get(key).writeLock().lock();
+    public Message addMessage(String m, String key) throws InterruptedException{
+        topicLocks.get(key).writeLock().lockInterruptibly();
         try {
             return createAndSendMessage(m, key);
         } finally {
@@ -114,8 +114,8 @@ public class TopicHandler {
         return message;
     }
 
-    public String getPublisherMessages(String topic, List<Message> publisherMessages) {
-        topicLocks.get(topic).readLock().lock();
+    public String getPublisherMessages(String topic, List<Message> publisherMessages) throws InterruptedException{
+        topicLocks.get(topic).readLock().lockInterruptibly();
         try {
             return retrievePublisherMessages(topic, publisherMessages);
         } finally {
@@ -135,8 +135,8 @@ public class TopicHandler {
         return stamp.toString();
     }
 
-    public void deleteMessage(int ID, String key) {
-        topicLocks.get(key).writeLock().lock();
+    public void deleteMessage(int ID, String key) throws InterruptedException{
+        topicLocks.get(key).writeLock().lockInterruptibly();
         try {
             if (information.get(key).removeMessage(ID)) {
                 System.out.println("Message with ID " + ID + " successfully deleted from the topic " + key);
@@ -150,7 +150,7 @@ public class TopicHandler {
         }
     }
 
-    public void addTopic(String key) {
+    public void addTopic(String key) throws InterruptedException{
         if (!containsTopic(key)) {
             editTopic.writeLock().lock();
             try {
