@@ -32,9 +32,9 @@ public class TopicHandler {
         topicLocks.put("travel", new ReentrantReadWriteLock());
         topicLocks.put("cinema", new ReentrantReadWriteLock());
 
-        information.get("sport").addMessage("Il mio sport preferito è il cricket");
-        information.get("sport").addMessage("Siuuuuuuuuuuuuum");
-        information.get("cinema").addMessage("È un ciiiiiiiinema");
+        information.get("sport").addMessage("My favourite sport is cricket");
+        information.get("sport").addMessage("Forza Olimpia Castello!");
+        information.get("cinema").addMessage("My favourite film is 'Pulp Fiction'");
     }
 
     public boolean startInspection(String topic) throws InterruptedException{
