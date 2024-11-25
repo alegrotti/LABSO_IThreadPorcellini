@@ -1,6 +1,7 @@
-## Getting Started
+## Description
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+This group project was developed for the Operating System exam. 
+Students of the group: Grotti Alessandro, Gambini Noemi, Terontoli Leonardo.
 
 ## Folder Structure
 
